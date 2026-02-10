@@ -1,3 +1,5 @@
+✔ Phase 0 - Speech → text → tasks 🎙️
+
 Phase 1 — Voice back (text → speech) 🔊
 
 Phase 2 — Auto-create Python files 📁
