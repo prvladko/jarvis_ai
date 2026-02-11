@@ -26,8 +26,34 @@ RATE = 44100
 SECONDS = 6
 MODEL_PATH = "/Users/vladkolinko/whisper_models/ggml-base.en.bin"
 OLLAMA_MODEL = "qwen2.5-coder:7b"
+WAKE_WORD = "hey jarvis"
+WAKE_SECONDS = 2
 # ------------------------
 voice = PiperVoice.load("en_US-lessac-medium.onnx")
+
+def wait_for_wake_word():
+    print("👂 Listening for wake word...")
+
+    while True:
+        audio = sd.rec(int(RATE * WAKE_SECONDS), samplerate=RATE, channels=1)
+        sd.wait()
+        write("wake.wav", RATE, audio)
+
+        command = [
+            "whisper-cli",
+            "-m", MODEL_PATH,
+            "-f", "wake.wav"
+        ]
+
+        result = subprocess.run(command, capture_output=True, text=True)
+        heard = result.stdout.lower()
+
+        print("Heard:", heard.strip())
+
+        if WAKE_WORD in heard:
+            print("✅ Wake word detected")
+            speak("Yes?")
+            break
 
 def record_audio():
     print("🎙 Speak now...")
@@ -96,6 +122,8 @@ def speak(text):
 
 def main():
     while True:
+        wait_for_wake_word()
+
         record_audio()
         text = transcribe_audio()
 
@@ -103,8 +131,8 @@ def main():
         print(text)
 
         if text.lower() in ["exit", "quit", "stop"]:
-            speak("Goodbye.")
-            break
+            speak("Going back to sleep.")
+            continue
 
         answer = ask_jarvis(text)
 
