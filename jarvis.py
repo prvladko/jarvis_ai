@@ -4,6 +4,11 @@ import subprocess
 import requests
 import json
 import time
+import re
+import wave
+from piper import PiperVoice
+import subprocess
+
 
 # -------- CONFIG --------
 RATE = 44100
@@ -11,6 +16,7 @@ SECONDS = 6
 MODEL_PATH = "/Users/vladkolinko/whisper_models/ggml-base.en.bin"
 OLLAMA_MODEL = "qwen2.5-coder:7b"
 # ------------------------
+voice = PiperVoice.load("en_US-lessac-medium.onnx")
 
 def record_audio():
     print("🎙 Speak now...")
@@ -68,6 +74,13 @@ def save_code(code):
         f.write(code)
     print(f"\n📁 Code saved to {filename}")
 
+def speak(text):
+    print("🔊 Speaking...")
+    with wave.open("output.wav", "wb") as wav_file:
+        voice.synthesize_wav(text, wav_file)
+
+    subprocess.run(["afplay", "output.wav"])
+
 def main():
     record_audio()
     text = transcribe_audio()
@@ -79,6 +92,13 @@ def main():
 
     print("\n🤖 J.A.R.V.I.S:\n")
     print(answer)
+
+
+    speak(answer)
+
+    code = extract_code(answer)
+    if code:
+        save_code(code)
 
 if __name__ == "__main__":
     main()
