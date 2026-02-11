@@ -9,6 +9,17 @@ import wave
 from piper import PiperVoice
 import subprocess
 
+conversation = [
+    {
+        "role": "system",
+        "content": """
+You are J.A.R.V.I.S.
+Be concise.
+If generating Python code, wrap it in ```python``` blocks.
+"""
+    }
+]
+
 
 # -------- CONFIG --------
 RATE = 44100
@@ -35,31 +46,33 @@ def transcribe_audio():
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout.strip()
 
-def ask_jarvis(text):
+def ask_jarvis(user_text):
+    global conversation
+
+    conversation.append({
+        "role": "user",
+        "content": user_text
+    })
+
     print("🧠 Thinking...")
-    prompt = f"""
-If user asks to create code:
-- Put ONLY the final Python code inside triple backticks.
-- Example:
-
-```python
-print("hello")
-
-User said:
-{text}
-"""
-    
 
     response = requests.post(
-        "http://localhost:11434/api/generate",
+        "http://localhost:11434/api/chat",
         json={
             "model": OLLAMA_MODEL,
-            "prompt": prompt,
+            "messages": conversation,
             "stream": False
         }
     )
 
-    return response.json()["response"]
+    assistant_reply = response.json()["message"]["content"]
+
+    conversation.append({
+        "role": "assistant",
+        "content": assistant_reply
+    })
+
+    return assistant_reply
 
 def extract_code(response_text):
     pattern = r"```python(.*?)```"
@@ -82,23 +95,27 @@ def speak(text):
     subprocess.run(["afplay", "output.wav"])
 
 def main():
-    record_audio()
-    text = transcribe_audio()
+    while True:
+        record_audio()
+        text = transcribe_audio()
 
-    print("\n🗣 You said:")
-    print(text)
+        print("\n🗣 You said:")
+        print(text)
 
-    answer = ask_jarvis(text)
+        if text.lower() in ["exit", "quit", "stop"]:
+            speak("Goodbye.")
+            break
 
-    print("\n🤖 J.A.R.V.I.S:\n")
-    print(answer)
+        answer = ask_jarvis(text)
 
+        print("\n🤖 J.A.R.V.I.S:\n")
+        print(answer)
 
-    speak(answer)
+        speak(answer)
 
-    code = extract_code(answer)
-    if code:
-        save_code(code)
+        code = extract_code(answer)
+        if code:
+            save_code(code)
 
 if __name__ == "__main__":
     main()
