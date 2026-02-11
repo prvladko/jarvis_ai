@@ -32,13 +32,17 @@ def transcribe_audio():
 def ask_jarvis(text):
     print("🧠 Thinking...")
     prompt = f"""
-You are J.A.R.V.I.S.
-Explain everything step by step for a beginner.
-If code is requested, write clean Python code.
+If user asks to create code:
+- Put ONLY the final Python code inside triple backticks.
+- Example:
+
+```python
+print("hello")
 
 User said:
 {text}
 """
+    
 
     response = requests.post(
         "http://localhost:11434/api/generate",
@@ -50,6 +54,19 @@ User said:
     )
 
     return response.json()["response"]
+
+def extract_code(response_text):
+    pattern = r"```python(.*?)```"
+    match = re.search(pattern, response_text, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return None
+
+def save_code(code):
+    filename = "generated_app.py"
+    with open(filename, "w") as f:
+        f.write(code)
+    print(f"\n📁 Code saved to {filename}")
 
 def main():
     record_audio()
