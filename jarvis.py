@@ -46,11 +46,19 @@ def wait_for_wake_word():
         ]
 
         result = subprocess.run(command, capture_output=True, text=True)
-        heard = result.stdout.lower()
+        heard_raw = result.stdout.lower()
+
+        # remove timestamps
+        heard = re.sub(r"\[.*?\]", "", heard_raw)
+
+        # remove punctuation
+        heard = re.sub(r"[^\w\s]", "", heard)
+
+        heard = heard.strip()
 
         print("Heard:", heard.strip())
 
-        if WAKE_WORD in heard:
+        if "jarvis" in heard:
             print("✅ Wake word detected")
             speak("Yes?")
             break
@@ -111,7 +119,39 @@ def save_code(code):
     filename = "generated_app.py"
     with open(filename, "w") as f:
         f.write(code)
+
     print(f"\n📁 Code saved to {filename}")
+
+    run_generated_code(filename)
+
+def run_generated_code(filename):
+    print("▶️ Running generated code...\n")
+
+    try:
+        result = subprocess.run(
+            ["python3", filename],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        output = result.stdout
+        errors = result.stderr
+
+        if output:
+            print("📤 Output:\n", output)
+
+        if errors:
+            print("⚠️ Errors:\n", errors)
+
+        if output:
+            speak("The program executed successfully.")
+        elif errors:
+            speak("There was an error in the generated code.")
+
+    except subprocess.TimeoutExpired:
+        print("⏰ Execution timed out.")
+        speak("The program took too long to run.")
 
 def speak(text):
     print("🔊 Speaking...")
