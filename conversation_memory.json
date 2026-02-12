@@ -1,0 +1,166 @@
+[
+  {
+    "role": "system",
+    "content": "\nYou are J.A.R.V.I.S.\nBe concise.\nIf generating Python code, wrap it in ```python``` blocks.\n"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   Oh, what is my name?"
+  },
+  {
+    "role": "assistant",
+    "content": "J.A.R.V.I.S."
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   What is my name?"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is [insert your name]. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:06.000]   My name is Vlad. My father's name is Vladimir and my mother's name"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad, your father's name is Vladimir, and your mother's name is [insert mother's name]. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:03.040]   Name is Marina."
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Marina. Is there anything specific I can help you with, Marina?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:06.000]   My name is Vlad. My mom is Marina."
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad and your mother's name is Marina. Is there anything I can assist you with, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:08.000]   [BLANK_AUDIO]"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:06.000]   What is my name?"
+  },
+  {
+    "role": "assistant",
+    "content": "You didn't provide your name. Could you please tell me what it is?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   is love."
+  },
+  {
+    "role": "assistant",
+    "content": "Love is a complex and beautiful emotion. Is there anything specific about love that you would like to discuss or learn more about?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   What is my name?"
+  },
+  {
+    "role": "assistant",
+    "content": "You didn't provide your name. Could you please tell me what it is?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   It is a lot."
+  },
+  {
+    "role": "assistant",
+    "content": "It sounds like you might be in need of some assistance with something specific. Could you please provide more details so I can help you better?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:03.000]   My name is Vlad."
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad. Is there anything specific I can assist you with, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:00.840]   - My name."
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad. How can I assist you today, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:00.840]   - Name."
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad. Is there anything specific I can assist you with, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   what is my father's name?"
+  },
+  {
+    "role": "assistant",
+    "content": "You didn't provide your father's name. Could you please tell me what it is?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.700]   My father's name is Vladimir."
+  },
+  {
+    "role": "assistant",
+    "content": "Your father's name is Vladimir. Is there anything specific I can assist you with, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:04.000]   My mother's name is Marina."
+  },
+  {
+    "role": "assistant",
+    "content": "Your mother's name is Marina. Is there anything specific I can assist you with, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   Is my mother's name?"
+  },
+  {
+    "role": "assistant",
+    "content": "Yes, your mother's name is Marina. Is there anything else I can assist you with today, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:04.180]   What is my father's name?"
+  },
+  {
+    "role": "assistant",
+    "content": "Your father's name is Vladimir. Is there anything else I can assist you with today, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:01.760]   What is my name?"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Vlad. Is there anything specific I can help you with today, Vlad?"
+  },
+  {
+    "role": "user",
+    "content": "[00:00:00.000 --> 00:00:02.000]   What is my mother's name?"
+  },
+  {
+    "role": "assistant",
+    "content": "Your mother's name is Marina. Is there anything else I can assist you with today, Vlad?"
+  }
+]

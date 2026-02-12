@@ -9,6 +9,8 @@ import wave
 from piper import PiperVoice
 import subprocess
 from rapidfuzz import fuzz
+import pvporcupine
+import os
 
 conversation = [
     {
@@ -23,56 +25,57 @@ If generating Python code, wrap it in ```python``` blocks.
 
 
 # -------- CONFIG --------
+ACCESS_KEY = os.getenv("PORCUPINE_ACCESS_KEY")
 RATE = 44100
 SECONDS = 6
 MODEL_PATH = "/Users/vladkolinko/whisper_models/ggml-base.en.bin"
 OLLAMA_MODEL = "qwen2.5-coder:7b"
-WAKE_WORD = "jarvis"
-WAKE_SECONDS = 3
+MEMORY_FILE = "conversation_memory.json"
 # ------------------------
+
+porcupine = pvporcupine.create(
+    access_key=ACCESS_KEY,
+    keywords=["jarvis"]
+)
+
 voice = PiperVoice.load("en_US-lessac-medium.onnx")
+
+def load_memory():
+    global conversation
+    if os.path.exists(MEMORY_FILE):
+        with open(MEMORY_FILE, "r") as f:
+            conversation[:] = json.load(f)
+
+def save_memory():
+    with open(MEMORY_FILE, "w") as f:
+        json.dump(conversation, f, indent=2)
 
 def wait_for_wake_word():
     print("👂 Listening for wake word...")
 
-    while True:
-        audio = sd.rec(int(RATE * WAKE_SECONDS), samplerate=RATE, channels=1)
-        sd.wait()
-        write("wake.wav", RATE, audio)
+    detected = False
 
-        command = [
-            "whisper-cli",
-            "-m", MODEL_PATH,
-            "-f", "wake.wav"
-        ]
+    def callback(indata, frames, time_info, status):
+        nonlocal detected
 
-        result = subprocess.run(command, capture_output=True, text=True)
-        heard_raw = result.stdout.lower()
+        pcm = indata.flatten()
+        result = porcupine.process(pcm)
 
-        # remove timestamps
-        heard = re.sub(r"\[.*?\]", "", heard_raw)
+        if result >= 0:
+            detected = True
 
-        # remove punctuation
-        heard = re.sub(r"[^\w\s]", "", heard)
+    with sd.InputStream(
+        samplerate=porcupine.sample_rate,
+        blocksize=porcupine.frame_length,
+        dtype="int16",
+        channels=1,
+        callback=callback
+    ):
+        while not detected:
+            sd.sleep(10)
 
-        heard = heard.strip()
-
-        words = heard.split()
-
-        detected = False
-
-        for word in words:
-            similarity = fuzz.partial_ratio(word, WAKE_WORD)
-            print(f"Heard word: {word} | similarity: {similarity}")
-
-            if similarity >= 75:
-                detected = True
-                break
-
-        if detected:
-            print("✅ Wake word detected")
-            speak("Yes?")
-            break
+    print("🔥 Wake word detected")
+    speak("Yes?")
 
 def record_audio():
     print("🎙 Speak now...")
@@ -116,6 +119,7 @@ def ask_jarvis(user_text):
         "role": "assistant",
         "content": assistant_reply
     })
+    save_memory()
 
     return assistant_reply
 
@@ -172,6 +176,7 @@ def speak(text):
     subprocess.run(["afplay", "output.wav"])
 
 def main():
+    load_memory()
     while True:
         wait_for_wake_word()
 
