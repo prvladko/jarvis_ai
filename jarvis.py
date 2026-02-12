@@ -8,6 +8,7 @@ import re
 import wave
 from piper import PiperVoice
 import subprocess
+from rapidfuzz import fuzz
 
 conversation = [
     {
@@ -26,8 +27,8 @@ RATE = 44100
 SECONDS = 6
 MODEL_PATH = "/Users/vladkolinko/whisper_models/ggml-base.en.bin"
 OLLAMA_MODEL = "qwen2.5-coder:7b"
-WAKE_WORD = "hey jarvis"
-WAKE_SECONDS = 2
+WAKE_WORD = "jarvis"
+WAKE_SECONDS = 3
 # ------------------------
 voice = PiperVoice.load("en_US-lessac-medium.onnx")
 
@@ -56,9 +57,19 @@ def wait_for_wake_word():
 
         heard = heard.strip()
 
-        print("Heard:", heard.strip())
+        words = heard.split()
 
-        if "jarvis" in heard:
+        detected = False
+
+        for word in words:
+            similarity = fuzz.partial_ratio(word, WAKE_WORD)
+            print(f"Heard word: {word} | similarity: {similarity}")
+
+            if similarity >= 75:
+                detected = True
+                break
+
+        if detected:
             print("✅ Wake word detected")
             speak("Yes?")
             break
